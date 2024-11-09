@@ -2,7 +2,6 @@
 pub mod binary;
 mod function;
 
-use std::fmt::format;
 use rfd;
 use eframe::egui;
 use iced_x86::Formatter;
@@ -81,7 +80,7 @@ impl Coconut {
                         ui.end_row();
 
                         if self.binary.is_some() {
-                            let binary = self.binary.as_mut().unwrap();
+                            //let binary = self.binary.as_mut().unwrap();
 
                             /*
                             if binary.get_sections().is_some() {

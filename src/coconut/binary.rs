@@ -87,11 +87,10 @@ impl Binary {
 
                 // Replace the current struct with the new one
                 *self = new_binary;
-            },
-            Err(e) => eprintln!("Failed to read file: {}", e),
-        }
 
-        self.get_imports();
+            },
+            Err(e) => panic!("Failed to read file: {}", e),
+        }
     }
 
     pub fn get_path(&self) -> String {
@@ -249,9 +248,6 @@ impl Binary {
             }
         }
     }
-
-
-    
 }
 
 
@@ -262,4 +258,104 @@ pub fn build_new_binary() -> Binary {
         object_builder: |_| None,
         functions: HashMap::new(),
     }.build()
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_binary_get_path() {
+        let path = "./testdata/c2e624bf51248e2a8ab114c562c0eaf5d40d841382fd188f6d693a51def1465f";
+
+        let mut binary = build_new_binary();
+        binary.open_file(path);
+        
+        let new_path = binary.get_path();
+
+        assert_eq!(path.to_string(), new_path)
+    }
+
+    #[test]
+    fn test_binary_get_base_address() {
+        let path = "./testdata/c2e624bf51248e2a8ab114c562c0eaf5d40d841382fd188f6d693a51def1465f";
+
+        let mut binary = build_new_binary();
+        binary.open_file(path);
+
+        let base_address = binary.get_base_address();
+
+        assert!(base_address != 0);
+    }
+
+    #[test]
+    fn test_binary_get_file_size() {
+        let path = "./testdata/c2e624bf51248e2a8ab114c562c0eaf5d40d841382fd188f6d693a51def1465f";
+
+        let mut binary = build_new_binary();
+        binary.open_file(path);
+
+        let file_size = binary.get_file_size();
+
+        assert!(file_size > 0);
+    }
+    
+    #[test]
+    fn test_binary_get_architecture() {
+        let path = "./testdata/c2e624bf51248e2a8ab114c562c0eaf5d40d841382fd188f6d693a51def1465f";
+
+        let mut binary = build_new_binary();
+        binary.open_file(path);
+
+        let architecture = binary.get_architecture();
+
+        assert_eq!(architecture, Architecture::I386);
+    }
+    
+    #[test]
+    fn test_binary_read_data() {
+        let path = "./testdata/c2e624bf51248e2a8ab114c562c0eaf5d40d841382fd188f6d693a51def1465f";
+
+        let mut binary = build_new_binary();
+        binary.open_file(path);
+
+        assert!(binary.get_data().len() > 0);
+    }
+    
+    #[test]
+    fn test_binary_build_disassembly() {
+        let path = "./testdata/c2e624bf51248e2a8ab114c562c0eaf5d40d841382fd188f6d693a51def1465f";
+
+        let mut binary = build_new_binary();
+        binary.open_file(path);
+        binary.build_disassembly();
+        
+        let functions = binary.get_functions();
+
+        assert!(functions.is_some());
+        
+        let functions = functions.unwrap();
+        
+        assert!(functions.len() > 0);
+    }
+    
+    #[test]
+    fn test_binary_get_function_instructions() {
+        let path = "./testdata/c2e624bf51248e2a8ab114c562c0eaf5d40d841382fd188f6d693a51def1465f";
+
+        let mut binary = build_new_binary();
+        binary.open_file(path);
+        binary.build_disassembly();
+
+        let functions = binary.get_functions();
+
+        assert!(functions.is_some());
+
+        let functions = functions.unwrap();
+
+        for function in functions {
+            assert!(function.get_instructions().len() > 0);
+        }
+    }
 }
