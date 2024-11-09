@@ -1,0 +1,11 @@
+[package]
+name = "coconut"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ouroboros = "0.18.4"
+iced-x86 = "1.21.0"
+object = "0.36.5"
+eframe = "0.29.1"
+rfd = "0.15.0"
