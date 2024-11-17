@@ -5,7 +5,6 @@ mod function;
 use rfd;
 use eframe::egui;
 use iced_x86::Formatter;
-use object::ObjectSection;
 use binary::Binary;
 use binary::build_new_binary;
 
@@ -61,8 +60,12 @@ impl Coconut {
                     ui.end_row();
 
                     ui.label("Size");
-
                     ui.label(format!("0x{:x} bytes", binary.get_file_size()));
+                    ui.end_row();
+                    
+                    ui.label("Kind");
+                    ui.label(format!("{:?}", binary.get_kind().unwrap()));
+                    ui.end_row();
                 }
             });
     }
